@@ -13,8 +13,8 @@ class CloudPricingAPI:
 
         self.regions = [
             "us-east-1",
-            "eu-central-1",
-            "ap-south-1",
+            # "eu-central-1",
+            # "ap-south-1",
         ]
 
     def get_aws_prices(self, region, service_code="AmazonEC2"):
@@ -29,15 +29,44 @@ class CloudPricingAPI:
         )
 
         try:
-            response = client.get_products(
-                ServiceCode=service_code,
-            )
-            print(f"Fetching prices for region: {region}. Got data of length: {len(response['PriceList'])}")
-            return self.parse_aws_data(response)
+            all_prices = []
+            next_token = None
+            max_attempts = 100
+
+            for i in range(max_attempts):
+                print(f"Attempt {i + 1} of {max_attempts}")
+                # Fetch products
+                if next_token:
+                    print("next token: {}".format(next_token))
+                    response = client.get_products(
+                        ServiceCode=service_code,
+                        MaxResults=100,
+                        NextToken=next_token
+                    )
+                else:
+                    response = client.get_products(
+                        ServiceCode=service_code,
+                        MaxResults=100
+                    )
+
+                # Process and collect the prices
+                prices = self.parse_aws_data(response)
+                all_prices.extend(prices)
+                print(f"Fetching prices for region: {region}. Got data of length: {len(response['PriceList'])}")
+
+                # Check for next token
+                next_token = response.get('NextToken')
+                if not next_token:
+                    print("No more pages to fetch. Exiting loop.")
+                    break  # Exit the loop if no more pages
+
+            print(f"Total prices fetched for region {region}: {len(all_prices)}")
+            return all_prices
 
         except Exception as e:
             print(f"Error fetching pricing data: {e}")
-            return []
+
+
 
     def parse_aws_data(self, response):
         # Parse and return AWS pricing data
