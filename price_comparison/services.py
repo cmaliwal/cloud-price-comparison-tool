@@ -1,7 +1,7 @@
 import boto3
 import json
 from datetime import datetime
-
+from django.conf import settings
 
 class CloudPricingAPI:
     def __init__(self):
@@ -18,8 +18,8 @@ class CloudPricingAPI:
         ]
 
     def get_aws_prices(self, region, service_code="AmazonEC2"):
-        aws_access_key_id = "AKIAZZ3UAMQCFIXG5OXN"
-        aws_secret_access_key = "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"
+        aws_access_key_id = settings.AWS_ACCESS_KEY_ID
+        aws_secret_access_key = settings.AWS_SECRET_ACCESS_KEY
 
         client = boto3.client(
             "pricing",
