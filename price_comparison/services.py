@@ -31,7 +31,7 @@ class CloudPricingAPI:
         try:
             all_prices = []
             next_token = None
-            max_attempts = 100
+            max_attempts = 1
 
             for i in range(max_attempts):
                 print(f"Attempt {i + 1} of {max_attempts}")
@@ -113,6 +113,16 @@ class CloudPricingAPI:
             for key, value in price_dimensions.items():
                 return float(value["priceDimensions"][key]["pricePerUnit"]["USD"])
         except KeyError:
+            try:
+                price_dimensions = product_data["terms"]["OnDemand"]
+                for key, value in price_dimensions.items():
+                    for k, v in value["priceDimensions"].items():
+                        if v["pricePerUnit"] and "USD" in v["pricePerUnit"]:
+                            return float(v["pricePerUnit"]["USD"])
+            except KeyError as e:
+                print(f"Key error: {e} in product_data: {product_data}")
+            except ValueError as e:
+                print(f"Value error: {e} in product_data: {product_data}")
             return 0.0
 
     # def get_all_prices(self):

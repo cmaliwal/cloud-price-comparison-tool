@@ -10,16 +10,21 @@ class Command(BaseCommand):
         pricing_api = CloudPricingAPI()
         prices = pricing_api.get_all_prices()
         for price_data in prices:
+            unique_fields = {
+                'cloud_type': price_data['cloud_type'],
+                'location': price_data['location'],
+                'instance_type': price_data['instance_type'],
+                'instance_family': price_data['instance_family'],
+                'vcpu': price_data['vcpu'],
+                'ram_gb': price_data['ram_gb'],
+            }
+
             CloudInstancePrice.objects.update_or_create(
-                cloud_type=price_data['cloud_type'],
-                location=price_data['location'],
-                instance_type=price_data['instance_type'],
-                effective_date=price_data['effective_date'],
                 defaults={
-                    'vcpu': price_data['vcpu'],
-                    'ram_gb': price_data['ram_gb'],
+                    'effective_date': price_data['effective_date'],
                     'price_per_hour': price_data['price_per_hour'],
-                    'instance_family': price_data['instance_family'],
-                }
+                },
+                **unique_fields
             )
+
         self.stdout.write(self.style.SUCCESS('Successfully updated cloud instance prices.'))
