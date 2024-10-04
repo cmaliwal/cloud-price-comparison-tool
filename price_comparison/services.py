@@ -31,13 +31,13 @@ class CloudPricingAPI:
         try:
             all_prices = []
             next_token = None
-            max_attempts = 1
+            max_attempts = 50
 
             for i in range(max_attempts):
                 print(f"Attempt {i + 1} of {max_attempts}")
                 # Fetch products
                 if next_token:
-                    print("next token: {}".format(next_token))
+                    # print("next token: {}".format(next_token))
                     response = client.get_products(
                         ServiceCode=service_code,
                         MaxResults=100,
@@ -65,7 +65,6 @@ class CloudPricingAPI:
 
         except Exception as e:
             print(f"Error fetching pricing data: {e}")
-
 
 
     def parse_aws_data(self, response):
@@ -97,6 +96,7 @@ class CloudPricingAPI:
                 }
             )
         return prices
+
 
     def convert_ram_to_gb(self, ram_str):
         # Convert RAM string (e.g., '16 GiB') to float
