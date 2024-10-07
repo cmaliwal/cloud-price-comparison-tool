@@ -1,6 +1,7 @@
 from django.db.models import Count
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+
 from .models import CloudInstancePrice
 from .serializers import CloudInstancePriceSerializer
 
@@ -51,7 +52,9 @@ class CloudInstancePriceList(ListAPIView):
             vcpu = group["vcpu"]
             ram_gb = group["ram_gb"]
             instance_count = group["instance_count"]
-            instances = CloudInstancePrice.objects.filter(vcpu=vcpu, ram_gb=ram_gb)
+            instances = CloudInstancePrice.objects.filter(
+                vcpu=vcpu, ram_gb=ram_gb
+            )
 
             serializer = self.get_serializer(instances, many=True)
 

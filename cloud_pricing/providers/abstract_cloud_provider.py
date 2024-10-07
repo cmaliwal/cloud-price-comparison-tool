@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class CloudProvider(ABC):
     @abstractmethod
     def get_prices(self, region, service_code):

@@ -1,13 +1,14 @@
-import boto3
 import json
 from datetime import datetime
+
+import boto3
 from django.conf import settings
+
 from .abstract_cloud_provider import CloudProvider
 
 
 class AWSProvider(CloudProvider):
     def __init__(self):
-
         # AWS-specific regions
         self.regions = [
             "us-east-1",
@@ -36,24 +37,27 @@ class AWSProvider(CloudProvider):
                     response = client.get_products(
                         ServiceCode=service_code,
                         MaxResults=100,
-                        NextToken=next_token
+                        NextToken=next_token,
                     )
                 else:
                     response = client.get_products(
-                        ServiceCode=service_code,
-                        MaxResults=100
+                        ServiceCode=service_code, MaxResults=100
                     )
 
                 prices = self.parse_data(response)
                 all_prices.extend(prices)
-                print(f"Fetching prices for region: {region}. Got data of length: {len(response['PriceList'])}")
+                print(
+                    f"Fetching prices for region: {region}. Got data of length: {len(response['PriceList'])}"
+                )
 
-                next_token = response.get('NextToken')
+                next_token = response.get("NextToken")
                 if not next_token:
                     print("No more pages to fetch. Exiting loop.")
                     break
 
-            print(f"Total prices fetched for region {region}: {len(all_prices)}")
+            print(
+                f"Total prices fetched for region {region}: {len(all_prices)}"
+            )
             return all_prices
 
         except Exception as e:
@@ -67,23 +71,27 @@ class AWSProvider(CloudProvider):
             attributes = product_data["product"]["attributes"]
             effective_date_str = product_data.get("publicationDate", "")
             effective_date = (
-                datetime.strptime(effective_date_str, "%Y-%m-%dT%H:%M:%SZ").date()
+                datetime.strptime(
+                    effective_date_str, "%Y-%m-%dT%H:%M:%SZ"
+                ).date()
                 if effective_date_str
                 else None
             )
             ram_str = attributes.get("memory", "0 GiB")
             ram_gb = self.convert_ram_to_gb(ram_str)
 
-            prices.append({
-                "cloud_type": "AWS",
-                "location": attributes.get("location", ""),
-                "instance_type": attributes.get("instanceType", ""),
-                "vcpu": attributes.get("vcpu", 0),
-                "ram_gb": ram_gb,
-                "price_per_hour": self.extract_price(product_data),
-                "effective_date": effective_date,
-                "instance_family": attributes.get("instanceFamily", ""),
-            })
+            prices.append(
+                {
+                    "cloud_type": "AWS",
+                    "location": attributes.get("location", ""),
+                    "instance_type": attributes.get("instanceType", ""),
+                    "vcpu": attributes.get("vcpu", 0),
+                    "ram_gb": ram_gb,
+                    "price_per_hour": self.extract_price(product_data),
+                    "effective_date": effective_date,
+                    "instance_family": attributes.get("instanceFamily", ""),
+                }
+            )
         return prices
 
     def convert_ram_to_gb(self, ram_str):
@@ -97,7 +105,9 @@ class AWSProvider(CloudProvider):
         try:
             price_dimensions = product_data["pricing"]["terms"]["OnDemand"]
             for key, value in price_dimensions.items():
-                return float(value["priceDimensions"][key]["pricePerUnit"]["USD"])
+                return float(
+                    value["priceDimensions"][key]["pricePerUnit"]["USD"]
+                )
         except KeyError:
             try:
                 price_dimensions = product_data["terms"]["OnDemand"]

@@ -14,7 +14,9 @@ class CloudInstancePrice(models.Model):
     class Meta:
         verbose_name = "Cloud Instance Price"
         verbose_name_plural = "Cloud Instance Prices"
-        ordering = ['effective_date']
+        ordering = ["effective_date"]
 
     def __str__(self):
-        return f"{self.instance_type} ({self.cloud_type}) - {self.effective_date}"
+        return (
+            f"{self.instance_type} ({self.cloud_type}) - {self.effective_date}"
+        )

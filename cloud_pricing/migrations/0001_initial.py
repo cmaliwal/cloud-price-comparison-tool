@@ -4,30 +4,36 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='CloudInstancePrice',
+            name="CloudInstancePrice",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cloud_type', models.CharField(max_length=20)),
-                ('location', models.CharField(max_length=50)),
-                ('instance_type', models.CharField(max_length=50)),
-                ('instance_family', models.CharField(max_length=50)),
-                ('vcpu', models.IntegerField()),
-                ('ram_gb', models.FloatField()),
-                ('price_per_hour', models.FloatField()),
-                ('effective_date', models.DateField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("cloud_type", models.CharField(max_length=20)),
+                ("location", models.CharField(max_length=50)),
+                ("instance_type", models.CharField(max_length=50)),
+                ("instance_family", models.CharField(max_length=50)),
+                ("vcpu", models.IntegerField()),
+                ("ram_gb", models.FloatField()),
+                ("price_per_hour", models.FloatField()),
+                ("effective_date", models.DateField()),
             ],
             options={
-                'verbose_name': 'Cloud Instance Price',
-                'verbose_name_plural': 'Cloud Instance Prices',
-                'ordering': ['effective_date'],
+                "verbose_name": "Cloud Instance Price",
+                "verbose_name_plural": "Cloud Instance Prices",
+                "ordering": ["effective_date"],
             },
         ),
     ]

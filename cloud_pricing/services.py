@@ -1,5 +1,6 @@
 from .providers.aws_provider import AWSProvider
 
+
 class CloudPricingAPI:
     def __init__(self):
         self.providers = {
