@@ -1,41 +1,41 @@
 # Cloud Price Comparison Tool
 
-This project is a Django Rest Framework (DRF) application that provides an API for comparing cloud service prices across different cloud service providers (AWS, GCP, etc.). Users can filter instances based on criteria such as CPU count, RAM, and location. Services are grouped based on the combination of CPU and RAM.
+This project is a **Django Rest Framework (DRF)** application that provides an API for comparing cloud service prices across different cloud service providers (AWS, GCP, etc.). Users can filter instances based on criteria such as CPU count, RAM, and location. Services are grouped based on the combination of CPU and RAM.
 
 ## Requirements
 
-- Docker
+- **Docker**
 
 ## Setup
 
-1. Clone the repository:
+1. **Clone the repository:**
 
-    ```bash
-    git clone https://github.com/cmaliwal/digiusher_assignment.git
-    cd digiusher_assignment
-    ```
+   ```bash
+   git clone https://github.com/cmaliwal/digiusher_assignment.git
+   cd digiusher_assignment
+   ```
 
-2. Build the Django application Docker image:
+2. **Build the Django application Docker image:**
 
-    ```bash
-    docker compose build
-    ```
+   ```bash
+   docker compose build
+   ```
 
-3. Run the application locally:
+3. **Run the application locally:**
 
-    ```bash
-    docker compose up
-    ```
+   ```bash
+   docker compose up
+   ```
 
-4. Access the bash (optional):
+4. **Access the bash (optional):**
 
-    ```bash
-    docker compose ps
-    ```
+   ```bash
+   docker compose ps
+   ```
 
-    ```bash
-    docker exec -it container_id /bin/bash
-    ```
+   ```bash
+   docker exec -it container_id /bin/bash
+   ```
 
 ## Environment Variables
 
@@ -158,7 +158,7 @@ The API supports pagination to efficiently handle large datasets. Pagination is 
 GET /api/cloud-instances/?page=2&page_size=5
 ```
 ### AWS Pagination Limit:
-While fetching pricing data from the AWS Pricing API, I have kept a limit of 50 pages while fetching responses. There are many pages, and the limimt can be increased within `AWSProvider` class.
+While fetching pricing data from the AWS Pricing API, I have kept a limit of 50 pages while fetching responses. There are many pages, and the limit can be increased within `AWSProvider` class.
 
 ### Example Paginated Response:
 
@@ -182,6 +182,25 @@ While fetching pricing data from the AWS Pricing API, I have kept a limit of 50 
     ]
 }
 ```
+
+## Alternate Solution
+
+An alternative approach to fetch AWS instance prices is to download the JSON file directly from the following URL:
+
+- **URL**: [AWS EC2 Pricing JSON](https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/index.json)
+
+### Ingestion Process
+
+- **Download the JSON**: You can periodically download the JSON file from the above URL to get the latest AWS instance prices.
+
+- **Daily Ingestion**: Set up a scheduled task (e.g., using cron or a task scheduler) to download and ingest this JSON file into your database daily.
+
+- **Data Structure**: Ensure that your data structure is designed to accommodate the schema of the JSON file. You may need to parse the JSON and extract relevant fields for your application.
+
+### Benefits
+
+- **Comprehensive Data**: This approach provides a comprehensive snapshot of all instances and their prices without needing to paginate through the API.
+- **Reduced API Load**: By using a static file, you reduce the load on the AWS Pricing API, minimizing your requests.
 
 ## Future Scope of Improvement
 
