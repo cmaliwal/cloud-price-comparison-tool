@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
-from price_comparison.models import CloudInstancePrice
-from price_comparison.services import CloudPricingAPI
+from cloud_pricing.models import CloudInstancePrice
+from cloud_pricing.services import CloudPricingAPI
 from django.db import transaction
 
 
